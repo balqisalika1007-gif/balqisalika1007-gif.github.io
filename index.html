@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>We Baby Bears — Cozy Quest</title>
+<style>
+*{box-sizing:border-box}
+:root{--black:#171513;--brown:#8b6245;--cream:#fffaf1;--milk:#f5eadb;--tan:#c9a98d;--white:#fff}
+body{margin:0;background:linear-gradient(135deg,#fffaf1,#ead8c6);color:var(--black);font-family:Arial,sans-serif;min-height:100vh;overflow-x:hidden}
+button{font:inherit;border:0;cursor:pointer}
+.app{max-width:1000px;margin:auto;min-height:100vh;padding-bottom:30px}
+.page{display:none;min-height:calc(100vh - 70px);padding:22px 17px;animation:bearIn .6s cubic-bezier(.2,.8,.2,1)}
+.page.active{display:block}
+@keyframes bearIn{0%{opacity:0;transform:translateY(25px) scale(.97)}45%{opacity:1}75%{transform:translateY(-5px) scale(1.01)}100%{transform:none}}
+@keyframes bearOut{to{opacity:0;transform:scale(.92)}}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.logo{background:var(--black);color:white;padding:12px 18px;border-radius:20px;font-weight:900;box-shadow:0 8px 20px #4a342933}
+.pill{background:white;color:var(--black);padding:10px 15px;border-radius:18px;font-weight:bold;box-shadow:0 6px 18px #76563a22}
+.hero{margin-top:25px;background:rgba(255,255,255,.88);border:2px solid #fff;border-radius:36px;padding:30px;text-align:center;box-shadow:0 18px 45px #76563a22;overflow:hidden}
+.bears{font-size:82px;letter-spacing:-12px;animation:bears 2.6s ease-in-out infinite}
+@keyframes bears{50%{transform:translateY(-9px) rotate(-1deg)}}
+h1{font-size:clamp(32px,7vw,60px);margin:10px 0 8px;color:var(--brown)}
+h2{margin:7px 0}
+p{line-height:1.6}
+.btn{padding:14px 21px;border-radius:17px;background:var(--black);color:#fff;font-weight:800;box-shadow:0 8px 16px #4b352655;transition:.2s}
+.btn:hover{transform:translateY(-3px)}
+.btn.brown{background:var(--brown)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin-top:20px}
+.card{background:#fff;border-radius:25px;padding:22px;text-align:center;box-shadow:0 10px 28px #76563a22;transition:.25s}
+.card:hover{transform:translateY(-5px) rotate(-.5deg)}
+.icon{font-size:48px}
+.nav{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;padding:10px 16px}
+.nav button{background:#fff;padding:11px 16px;border-radius:15px;font-weight:bold;box-shadow:0 5px 15px #76563a1f}
+.game{margin-top:18px;background:#fff;border-radius:30px;padding:20px;box-shadow:0 15px 38px #76563a22}
+.gamehead{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-weight:bold}
+#cookieArea{height:410px;border-radius:25px;background:linear-gradient(145deg,#f4e4d2,#fffaf2);border:3px dashed #c9a98d;position:relative;overflow:hidden;margin:15px 0}
+.cookie{position:absolute;width:65px;height:65px;border-radius:50%;background:#8b6245;border:6px solid #6e4c35;display:flex;align-items:center;justify-content:center;font-size:31px;box-shadow:0 7px 10px #4b352633;animation:cookieBob 1s infinite alternate}
+@keyframes cookieBob{to{transform:translateY(-7px) rotate(5deg)}}
+.timer{height:11px;background:#eadfd3;border-radius:99px;overflow:hidden}
+#bar{height:100%;width:100%;background:#171513;transition:.1s}
+.msg{text-align:center;min-height:28px;font-weight:bold}
+.memory{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:530px;margin:20px auto}
+.cardmem{height:90px;border-radius:18px;background:#171513;color:white;display:flex;align-items:center;justify-content:center;font-size:37px;transition:.25s}
+.cardmem.open{background:#ead8c6;color:#171513;transform:rotateY(180deg)}
+.score{font-size:52px;font-weight:900;color:#8b6245}
+.list{max-width:500px;margin:20px auto}.row{display:flex;justify-content:space-between;background:#faf4eb;padding:13px;border-radius:15px;margin:8px 0}
+.modal{position:fixed;inset:0;background:#17151388;display:none;align-items:center;justify-content:center;padding:20px;z-index:20}
+.modal.show{display:flex}
+.modalbox{background:#fffaf1;border-radius:30px;padding:28px;text-align:center;max-width:390px;animation:pop .35s ease}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.bearpop{position:fixed;font-size:28px;pointer-events:none;z-index:30;animation:popBear 1.4s forwards}
+@keyframes popBear{to{transform:translateY(-120px) rotate(15deg);opacity:0}}
+footer{text-align:center;color:#816c5c;font-size:13px;padding:10px}
+@media(max-width:500px){.bears{font-size:62px}.hero{padding:22px 15px}#cookieArea{height:350px}.memory{gap:7px}.cardmem{height:72px}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<section id="home" class="page active">
+ <div class="top"><div class="logo">🐻 We Baby Bears</div><div class="pill">🏆 <span id="bestTop">0</span></div></div>
+ <div class="hero">
+  <div class="bears">🐼 🐻‍❄️ 🐻</div>
+  <h1>Cozy Quest</h1>
+  <p>Selamat datang di dunia kecil We Baby Bears! Mainkan mini-game seru, kumpulkan poin, dan bantu para bear menyelesaikan misi mereka. ☕🍪</p>
+  <button class="btn brown" onclick="go('games')">🎮 Mulai Petualangan</button>
+ </div>
+ <div class="grid">
+  <div class="card"><div class="icon">🍪</div><h3>Cookie Rush</h3><p>Kejar cookie sebelum waktunya habis!</p></div>
+  <div class="card"><div class="icon">🧠</div><h3>Bear Memory</h3><p>Cocokkan semua kartu para bear.</p></div>
+  <div class="card"><div class="icon">🏕️</div><h3>Cozy Camp</h3><p>Lihat koleksi skor terbaikmu.</p></div>
+ </div>
+</section>
+
+<section id="games" class="page">
+ <div class="top"><div class="logo">🎮 Mini Games</div><button class="pill" onclick="go('home')">← Home</button></div>
+ <div class="grid">
+  <div class="card"><div class="icon">🍪</div><h2>Cookie Rush</h2><p>Pecahkan cookie sebanyak mungkin dalam 30 detik.</p><button class="btn brown" onclick="startCookie()">Main Sekarang</button></div>
+  <div class="card"><div class="icon">🧠</div><h2>Bear Memory</h2><p>Temukan 8 pasangan kartu dengan langkah sesedikit mungkin.</p><button class="btn" onclick="startMemory()">Main Sekarang</button></div>
+ </div>
+</section>
+
+<section id="cookieGame" class="page">
+ <div class="top"><div class="logo">🍪 Cookie Rush</div><button class="pill" onclick="go('games')">← Games</button></div>
+ <div class="game">
+  <div class="gamehead"><span>Cookie: <b id="cookieScore">0</b></span><span>Waktu: <b id="cookieTime">30</b>s</span></div>
+  <div class="timer"><div id="bar"></div></div>
+  <div id="cookieArea"></div>
+  <div id="cookieMsg" class="msg">Klik cookie sebanyak mungkin! 🍪</div>
+  <div style="text-align:center"><button class="btn brown" onclick="startCookie()">🔄 Main Lagi</button></div>
+ </div>
+</section>
+
+<section id="memoryGame" class="page">
+ <div class="top"><div class="logo">🧠 Bear Memory</div><button class="pill" onclick="go('games')">← Games</button></div>
+ <div class="game" style="text-align:center">
+  <p>Langkah: <b id="moves">0</b> · Pasangan: <b id="pairs">0</b>/8</p>
+  <div id="memoryGrid" class="memory"></div>
+  <div id="memoryMsg" class="msg">Cari semua pasangan! 🐻</div>
+  <button class="btn" onclick="startMemory()">🔄 Acak Lagi</button>
+ </div>
+</section>
+
+<section id="scores" class="page">
+ <div class="top"><div class="logo">🏆 Cozy Camp</div><button class="pill" onclick="go('home')">← Home</button></div>
+ <div class="hero">
+  <div class="bears">🐼 🐻‍❄️ 🐻</div>
+  <div class="score" id="bestScore">0</div>
+  <p>Ini adalah skor terbaik yang tersimpan di browser kamu.</p>
+  <div class="list">
+   <div class="row"><span>🍪 Cookie Rush</span><b id="cookieBest">0</b></div>
+   <div class="row"><span>🧠 Bear Memory</span><b id="memoryBest">0</b></div>
+  </div>
+  <button class="btn brown" onclick="resetScores()">🗑️ Reset Skor</button>
+ </div>
+</section>
+
+<div class="nav">
+ <button onclick="go('home')">🏠 Home</button><button onclick="go('games')">🎮 Games</button><button onclick="go('scores')">🏆 Scores</button>
+</div>
+<footer>🤎 Made for a cozy bear adventure</footer>
+</div>
+
+<div id="modal" class="modal"><div class="modalbox"><div class="bears" style="font-size:55px">🐼 🐻‍❄️ 🐻</div><h2 id="modalTitle">Yeay!</h2><p id="modalText"></p><button class="btn brown" onclick="closeModal()">✨ Oke!</button></div></div>
+
+<script>
+let cookieTimer=null,cookieScore=0,cookieStart=0;
+let best=Number(localStorage.getItem('wbbBest')||0);
+let cb=Number(localStorage.getItem('wbbCookie')||0);
+let mb=Number(localStorage.getItem('wbbMemory')||0);
+let first=null,lock=false,moves=0,pairs=0;
+
+const $=id=>document.getElementById(id);
+function go(id){
+ document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+ $(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});
+ if(id!=='cookieGame'&&cookieTimer){clearInterval(cookieTimer);cookieTimer=null}
+ updateScores();bearTransition();
+}
+function updateScores(){
+ $('bestTop').textContent=best;$('bestScore').textContent=best;
+ $('cookieBest').textContent=cb;$('memoryBest').textContent=mb;
+}
+function save(kind,n){
+ if(kind==='cookie'&&n>cb){cb=n;localStorage.setItem('wbbCookie',cb)}
+ if(kind==='memory'&&n>mb){mb=n;localStorage.setItem('wbbMemory',mb)}
+ if(n>best){best=n;localStorage.setItem('wbbBest',best)}
+ updateScores();
+}
+function bearTransition(){
+ const bears=['🐼','🐻‍❄️','🐻','🤎'];
+ for(let i=0;i<4;i++){let e=document.createElement('div');e.className='bearpop';e.textContent=bears[i];e.style.left=(18+i*20)+'%';e.style.top='75%';document.body.appendChild(e);setTimeout(()=>e.remove(),1400)}
+}
+function showModal(t,m){$('modalTitle').textContent=t;$('modalText').textContent=m;$('modal').classList.add('show')}
+function closeModal(){$('modal').classList.remove('show')}
+
+function startCookie(){
+ go('cookieGame');clearInterval(cookieTimer);cookieScore=0;$('cookieScore').textContent=0;
+ $('cookieTime').textContent=30;$('bar').style.width='100%';$('cookieMsg').textContent='Klik cookie sebanyak mungkin! 🍪';
+ const area=$('cookieArea');area.innerHTML='';
+ function spawn(){
+  const c=document.createElement('button');c.className='cookie';c.textContent=['🍪','🤎','✨'][Math.floor(Math.random()*3)];
+  const size=52+Math.random()*22;c.style.width=size+'px';c.style.height=size+'px';
+  c.style.left=Math.max(3,Math.random()*82)+'%';c.style.top=Math.max(3,Math.random()*78)+'%';
+  c.onclick=()=>{cookieScore++;$('cookieScore').textContent=cookieScore;c.remove();spawn()};
+  area.appendChild(c);setTimeout(()=>c.remove(),2300);
+ }
+ for(let i=0;i<7;i++)spawn();
+ cookieStart=Date.now();
+ cookieTimer=setInterval(()=>{
+  const left=Math.max(0,30-Math.floor((Date.now()-cookieStart)/1000));
+  $('cookieTime').textContent=left;$('bar').style.width=(left/30*100)+'%';
+  if(left<=0){clearInterval(cookieTimer);cookieTimer=null;save('cookie',cookieScore);$('cookieMsg').textContent='Waktu habis! Skor: '+cookieScore+' 🍪';showModal('Cookie Rush selesai! 🍪','Kamu mendapatkan '+cookieScore+' poin.')}
+ },100);
+}
+
+const bears=['🐼','🐻‍❄️','🐻','🍯','🍪','🏕️','☕','🌲'];
+function startMemory(){
+ go('memoryGame');first=null;lock=false;moves=0;pairs=0;$('moves').textContent=0;$('pairs').textContent=0;
+ $('memoryMsg').textContent='Cari semua pasangan! 🐻';
+ const deck=[...bears,...bears].sort(()=>Math.random()-.5),grid=$('memoryGrid');grid.innerHTML='';
+ deck.forEach(icon=>{
+  const c=document.createElement('button');c.className='cardmem';c.dataset.icon=icon;c.textContent='?';
+  c.onclick=()=>flip(c);grid.appendChild(c);
+ });
+}
+function flip(c){
+ if(lock||c.classList.contains('open')||c===first)return;
+ c.classList.add('open');c.textContent=c.dataset.icon;
+ if(!first){first=c;return}
+ moves++;$('moves').textContent=moves;
+ if(first.dataset.icon===c.dataset.icon){
+  pairs++;$('pairs').textContent=pairs;first=null;
+  if(pairs===8){
+   const score=Math.max(10,120-moves*4);save('memory',score);
+   $('memoryMsg').textContent='Semua pasangan ditemukan! 🎉';
+   showModal('Bear Memory selesai! 🧠','Skormu '+score+' poin dengan '+moves+' langkah.');
+  }
+ }else{
+  lock=true;const a=first,b=c;
+  setTimeout(()=>{a.classList.remove('open');b.classList.remove('open');a.textContent='?';b.textContent='?';first=null;lock=false},750);
+ }
+}
+function resetScores(){
+ best=cb=mb=0;['wbbBest','wbbCookie','wbbMemory'].forEach(k=>localStorage.removeItem(k));
+ updateScores();showModal('Skor direset 🤎','Saatnya membuat rekor baru bersama para bear!');
+}
+updateScores();
+</script>
+</body>
+</html>
